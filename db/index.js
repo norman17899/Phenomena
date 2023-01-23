@@ -56,18 +56,22 @@ async function getOpenReports() {
  */
 async function createReport(reportFields) {
   // Get all of the fields from the passed in object
-
+ const {title, description, location, password} =reportFields;
 
   try {
     // insert the correct fields into the reports table
     // remember to return the new row from the query
+    const {rows:[report]} = await client.query(`
+    INSERT INTO reports(title, description, location, password)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+    ;`, [title, description, location, password]);
     
-
     // remove the password from the returned row
-    
-
+    delete report.password;
     // return the new report
     
+    return report;
 
   } catch (error) {
     throw error;
