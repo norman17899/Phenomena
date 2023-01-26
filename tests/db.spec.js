@@ -16,7 +16,7 @@ describe('Database', () => {
   })
   describe('Reports', () => {
     let testReport, testReportToClose, reports, singleReport;
-    xdescribe('createReport', () => {
+    describe('createReport', () => {
       beforeAll(async() => {
         testReport = await createReport({
           title: 'Bubbling Water',
@@ -103,7 +103,7 @@ describe('Database', () => {
         expect(firstComment.content).toEqual(testComment);
       });
     });
-    xdescribe('_getReport helper function', () => {
+    describe('_getReport helper function', () => {
       let report;
       beforeAll(async() => {
         report = await _getReport(reportIdToCreate);

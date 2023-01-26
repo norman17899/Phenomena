@@ -21,23 +21,38 @@ const client = new Client(CONNECTION_STRING);
 async function getOpenReports() {
   try {
     // first load all of the reports which are open
-    
+    const { rows: reports } = await client.query(`
+      SELECT * 
+      FROM reports
+      WHERE reports."isOpen" = 'true';
+    `)
 
     // then load the comments only for those reports, using a
     // WHERE "reportId" IN () clause
 
-    
+    const { rows: comments } = await client.query(`
+      SELECT * 
+      FROM comments
+      WHERE "reportId" IN (${
+        reports.map(report => report.id).join(', ')
+      });
+    ;`)
+
     // then, build two new properties on each report:
     // .comments for the comments which go with it
     //    it should be an array, even if there are none
     // .isExpired if the expiration date is before now
     //    you can use Date.parse(report.expirationDate) < new Date()
     // also, remove the password from all reports
-
+    
+    reports.forEach(report => {
+      report.comments = comments.filter(comment => comment.reportId === report.id);
+      report.isExpired = Date.parse(report.expirationDate) < new Date();
+      delete report.password;
+    });
 
     // finally, return the reports
-  
-
+    return reports
   } catch (error) {
     throw error;
   }
@@ -62,9 +77,9 @@ async function createReport(reportFields) {
     // insert the correct fields into the reports table
     // remember to return the new row from the query
     const {rows:[report]} = await client.query(`
-    INSERT INTO reports(title, description, location, password)
-    VALUES ($1, $2, $3, $4)
-    RETURNING *
+      INSERT INTO reports(title, description, location, password)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
     ;`, [title, description, location, password]);
     
     // remove the password from the returned row
@@ -95,10 +110,13 @@ async function createReport(reportFields) {
 async function _getReport(reportId) {
   try {
     // SELECT the report with id equal to reportId
-    
+    const { rows: [report] } = await client.query(`
+      SELECT * FROM reports
+      WHERE id=$1;
+    `, [reportId]);
 
     // return the report
-    
+    return report;
 
   } catch (error) {
     throw error;
