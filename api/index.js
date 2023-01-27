@@ -7,7 +7,6 @@ const {
     createReport,
     closeReport,
     createReportComment,
-    closeReport
 } = require('../db');
 
 /**
