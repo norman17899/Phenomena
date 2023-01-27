@@ -6,7 +6,8 @@ const {
     getOpenReports,
     createReport,
     closeReport,
-    createReportComment
+    createReportComment,
+    closeReport
 } = require('../db');
 
 /**
@@ -63,7 +64,15 @@ apiRouter.post('/reports', async (req, res, next)=>{
  * - on caught error, call next(error)
  */
 
+apiRouter.delete('/reports/:reportId', async (req, res, next) => {
+    try {
+        const close = await closeReport(req.params.reportId, req.body.password)
+        res.send(close);
 
+    } catch (error) {
+        next(error);
+    }
+})
 
 /**
  * Set up a POST request for /reports/:reportId/comments
