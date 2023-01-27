@@ -18,19 +18,20 @@ server.use(cors());
 server.use(express.json());
 // Have the server use your api router with prefix '/api'
 const apiRouter = require('./api');
-//server.use('/api', apiRouter);
+server.use('/api', apiRouter);
 // Import the client from your db/index.js
 const {client} = require('./db');
 // Create custom 404 handler that sets the status code to 404.
 server.use((error, req, res, next) =>{
+    console.error(err.stack);
     res.status(404);
-    res.send({ error: 'route not found' })
+    res.send({ error: "Request failed with status code 404" })
 })
 // Create custom error handling that sets the status code to 500
 // and returns the error as an object
 server.use((error, req, res, next) =>{
     res.status(500)
-    res.send({ error: error.message });
+    res.send({ error: "Request failed with status code 500" });
 })
 
 // Start the server listening on port PORT
