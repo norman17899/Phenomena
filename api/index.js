@@ -83,7 +83,16 @@ apiRouter.delete('/reports/:reportId', async (req, res, next) => {
  * - on caught error, call next(error)
  */
 
+apiRouter.post('/reports/:reportId/comments', async (req, res, next) => {
+    try {
+        const { reportId } = req.params
+        const postComments = await createReportComment (reportId, req.body)
 
+        res.send(postComments)
+    } catch (error) {
+        next (error);
+    }
+})
 
 // Export the apiRouter
 module.exports = apiRouter;
