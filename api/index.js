@@ -17,16 +17,13 @@ const {
  * - on success, it should send back an object like { reports: theReports }
  * - on caught error, call next(error)
  */
-apiRouter.get('/reports', async (req,res, next)=>{
+apiRouter.get('/reports', async (req, res, next) => {
    
     try{
         const theReports = await getOpenReports();
         
         res.send({reports: theReports});
-        
-       
-    }catch(error)
-    {
+    }catch(error) {
         next(error);
     }
 })
@@ -40,13 +37,12 @@ apiRouter.get('/reports', async (req,res, next)=>{
  * - on success, it should send back the object returned by createReport
  * - on caught error, call next(error)
  */
-apiRouter.post('/reports', async (req, res, next)=>{
+apiRouter.post('/reports', async (req, res, next) => {
     try{
         const newReport = await createReport(req.body);
+        
         res.send(newReport);
-
-    }catch(error)
-    {
+    }catch(error) {
         next(error);
     }
     
@@ -65,9 +61,12 @@ apiRouter.post('/reports', async (req, res, next)=>{
 
 apiRouter.delete('/reports/:reportId', async (req, res, next) => {
     try {
-        const close = await closeReport(req.params.reportId, req.body.password)
-        res.send(close);
+        const { reportId } = req.params;
+        const { password } = req.body;
 
+        const close = await closeReport(reportId, password)
+        
+        res.send(close);
     } catch (error) {
         next(error);
     }
@@ -86,6 +85,7 @@ apiRouter.delete('/reports/:reportId', async (req, res, next) => {
 apiRouter.post('/reports/:reportId/comments', async (req, res, next) => {
     try {
         const { reportId } = req.params
+
         const postComments = await createReportComment (reportId, req.body)
 
         res.send(postComments)
