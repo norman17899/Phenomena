@@ -36,7 +36,7 @@ server.use((error, req, res, next) =>{
 
 // Start the server listening on port PORT
 // On success, connect to the database
-server.listen(PORT, async()=>{
+server.listen(PORT, ()=>{
     console.log(`Connected to the server on port ${PORT}!`);
-    await client.connect();
+    client.connect();
 });
